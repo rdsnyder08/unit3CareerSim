@@ -4,8 +4,7 @@ import {Link, useNavigate} from 'react-router-dom'
 const COHORT_NAME = '2306-FTB-WEB-FT'
 const BASE_URL = `https://strangers-things.herokuapp.com/api/${COHORT_NAME}`
 
-export default function Register ({setToken}) {
-
+export default function Login ({setToken}) {
     const [username,setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState(null)
@@ -14,7 +13,7 @@ export default function Register ({setToken}) {
         e.preventDefault()
 
         try {
-            const response = await fetch(`${BASE_URL}/users/register`,
+            const response = await fetch(`${BASE_URL}/users/login`,
                 {
                     method:'POST',
                     headers: {
@@ -33,10 +32,16 @@ export default function Register ({setToken}) {
             const data = await response.json()
             console.log(data)
 
-            setToken(data.token)
+            if (response.ok && data.success){
+                setToken(data.token)
+                setError(null)
+                setUsername('')
+                setPassword('') 
+            } else {
+                setError('Invalid username and/or password')
+            }
 
-            setUsername('')
-            setPassword('')
+            
 
 
         } catch (err) {
@@ -44,25 +49,27 @@ export default function Register ({setToken}) {
         }
     }
 
-    return <>
-        <h1>Register</h1>
+    return(
+    <>
+        <h1>Login</h1>
         <form onSubmit={handleSubmit}>
             <label>Username:
-                <input value={username} onChange={e=>setUsername(e.target.value)} />
+                <input value={username} onChange={(e)=> setUsername(e.target.value)} />
             </label>
             <label>Password:
-                <input value={password} onChange={e => setPassword(e.target.value)} />
+                <input value={password} onChange={(e)=> setPassword(e.target.value)} />
             </label>
-            <button type='submit'>Register</button>
+            <button type='submit'>Login</button>
         </form>
         <br></br>
         <br></br>
-        <Link to='/'>Back to Login</Link>
+        <Link to='/register'>Don't have an account, Register Here!</Link>
         <br></br>
         <br></br>
-        <Link to='/posts'>Or view Posts without registering</Link>
 
-    </>
-
+        <Link to='/posts'>...or view posts without registering</Link>
+    
+    
+    </>)
 
 }
