@@ -46,6 +46,7 @@ export default function Register ({setToken}) {
 
     return <>
         <h1>Register</h1>
+        {error && <p>try different credentials, that username may be taken</p>}
         <form onSubmit={handleSubmit}>
             <label>Username:
                 <input value={username} onChange={e=>setUsername(e.target.value)} />

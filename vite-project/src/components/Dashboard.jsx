@@ -2,10 +2,39 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import {useNavigate} from 'react-router-dom'
 import {useState} from 'react'
+import {useEffect} from 'react'
 
 const Dashboard = ({username , token}) => {
+    const [user,setUser]=useState({})
     const [currentToken,setCurrentToken]=useState(token)
+    
     const navigate=useNavigate()
+
+    useEffect(() => {
+        async function fetchUser() {
+            let response = await fetch('/api/auth/me', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  },
+            })
+
+            let result = await response.json()
+
+            console.log(result)
+            //setMessage(result.message)
+            //setUser(result.user)
+        }
+
+
+        if (token.length !== 0) {
+            fetchUser() 
+        }
+    }, [token])
+
+    console.log('Token:', token)
+    console.log('username:', username)
+    
 
     function handleLogout () {
         console.log('logging out')
@@ -17,15 +46,11 @@ const Dashboard = ({username , token}) => {
     <div>
         <h2>Welcome {username}</h2>
     </div>
+    
     <div>
-        <h3>Messaging</h3>
+        <Link to='/makepost'>Create a Post</Link>
     </div>
-    <div>
-        <h3>Create a Post</h3>
-    </div>
-    <div>
-        <h3>Edit or Delete Posts</h3>
-    </div>
+    
     <div>
         <h3>View Posts</h3>
     </div>
