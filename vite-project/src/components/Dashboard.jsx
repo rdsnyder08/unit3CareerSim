@@ -52,7 +52,7 @@ const Dashboard = ({username , token}) => {
     </div>
     
     <div>
-        <h3>View Posts</h3>
+        <Link to='/postsauth'>View Posts</Link>
     </div>
     <div>
         <button onClick={handleLogout}>Log Out</button>
