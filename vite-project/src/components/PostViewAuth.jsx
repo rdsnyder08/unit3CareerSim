@@ -28,6 +28,8 @@ export default function PostViewAuth ({token}) {
     
         console.log(posts)
 
+
+
         const handleDeletePost = async (postId) => {
             try {
                 const response = await fetch(`${BASE_URL}/posts/${postId}`, {
@@ -47,6 +49,43 @@ export default function PostViewAuth ({token}) {
             }
         }
 
+        const handleMessageSubmit = async (postId, content) => {
+            try {
+                console.log('made it into handlemessagesubmit, posid:', postId)
+                const response = await fetch(`${BASE_URL}/posts/${postId}/messages`, {
+                    method: 'POST',
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    message: {
+                        content: content,
+                        },
+                    }),
+
+                })
+                const result=await response.json()
+
+                if (result.success) {
+                    console.log('message sent:', result.data.message)
+                    setPosts((prev =>
+                        prev.map((post)=>
+                            post._id === postId
+                                ? {
+                                    ...post,
+                                    messages: [...post.messages,result.data.message],
+                                }
+                                : post
+                        )))
+                    console.log('Message sent!')
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
 
     
         return( 
@@ -60,6 +99,31 @@ export default function PostViewAuth ({token}) {
                 <p>{p.description}</p>
                 <h3>{p.price}</h3>
                 <h3>Will deliver? {p.willDeliver.toString()}</h3>
+
+                {token && p.author._id !== token && (
+                    <form onSubmit={(e) =>{e.preventDefault()
+                        const content = e.target.messageContent.value
+                        handleMessageSubmit(p._id,content)
+                        e.target.messageContent.value = ''
+                    }}
+                >
+                    <input type='text' name='messageContent' placeholder='Message goes here' />
+                    <button type='submit'>Send</button>
+                </form>
+                
+                )}
+                <h3>Message Thread</h3>
+                {p.messages.map((message, messageIndex) => (
+                    <div key={messageIndex} className='message'>
+                        <p>{message.content}</p>
+                    </div>
+                ))}
+                
+                
+
+
+                
+                
                 {p.isAuthor ? (
                     <>
                     <button onClick={()=> handleDeletePost(p._id)}> Delete </button>
