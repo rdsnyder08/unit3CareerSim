@@ -90,15 +90,21 @@ export default function PostViewAuth ({token}) {
     
         return( 
         <>
+            <Link id='dashlink' to='/dashboard' > Take me back to my dashboard</Link>
+            <br></br>
             {posts.map((p,index) =>
             <div key={index}
             className='posts'
+            id='postsview'
             >
+                
+                
                 <h1>{p.title}</h1>
-                <h3>{p.author.username}</h3>
-                <p>{p.description}</p>
-                <h3>{p.price}</h3>
-                <h3>Will deliver? {p.willDeliver.toString()}</h3>
+                <h3>User: {p.author.username}</h3>
+                <p>Description: {p.description}</p>
+                <h4>Price: {p.price}</h4>
+                {p.willDeliver && <h4>User is willing to deliver</h4>}
+                
 
                 {token && p.author._id !== token && (
                     <form onSubmit={(e) =>{e.preventDefault()

@@ -44,7 +44,7 @@ const Dashboard = ({username , token}) => {
 
     return(<>
     <div>
-        <h2>Welcome {username}</h2>
+        <h2>{username}'s Dashboard</h2>
     </div>
     
     <div>
